@@ -257,7 +257,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 x: imageInfo.dotPosition.x,
                 y: imageInfo.dotPosition.y
             }).toString();
-            return `https://username.github.io/project/?${queryParams}`;
+            return `https://canvasicraft.github.io/Eye-Contact-Focus/?${queryParams}`;
         }
         return ''; // Return an empty string if no position is saved
     }
