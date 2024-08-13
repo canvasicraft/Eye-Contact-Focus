@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Add delete button
         const deleteButton = document.createElement('button');
         deleteButton.className = 'delete-button';
-        deleteButton.innerHTML = '<i class="fa-solid fa-trash"></i>'; // Set the innerHTML to include the Font Awesome icon
+        deleteButton.innerHTML = '<i class="fa-solid fa-trash"></i>'; // Set the innerHTML to include the Font Awesome icon update
         deleteButton.addEventListener('click', function() {
             removeImageFromStorage(url); // Call a function to handle the removal from storage
             itemElem.remove(); // Remove the element from the DOM
