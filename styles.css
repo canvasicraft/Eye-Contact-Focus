@@ -1,0 +1,175 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+}
+
+.wrapper {
+    width: 85vw;
+    height: 80vh;
+    overflow-y: auto;
+    border: 2px solid #ccc;
+    padding: 20px;
+    background: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow-x: hidden;
+}
+
+.input-field {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+}
+
+#image-url {
+    width: 90%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 0.35%;
+}
+
+#add-image {
+    width: 18%;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#load-image:hover {
+    background-color: #0056b3;
+}
+
+#gallery-container {
+    position: relative;
+    margin: 5px;
+    z-index: 1;
+    color: #fff;
+    left: 0.5%;
+}
+
+.image-wrapper {
+    display: block;
+    position: absolute;
+    width: auto;
+    margin: 5px;
+    z-index: 1;
+    color: #fff;
+}
+
+.image-wrapper > img {
+  display: block;
+  border-radius: 6px;
+  width: 20vw;
+  min-width: 280px !important;
+  transition: filter 0.3s ease;
+}
+
+*img {
+    user-select: none;
+}
+
+/*.image-wrapper:hover img {
+    filter: blur(3px); /* Apply blur effect when hovering over the image-wrapper
+}*/
+
+.button-container {
+    position: absolute;
+    bottom: 0%;
+    left: 50%;
+    transform: translate(-50%);
+    display: none;
+    backdrop-filter: blur(4px);
+    border-radius: 20px;
+}
+
+.image-wrapper:hover .button-container {
+    display: flex; // Show on hover
+    flex-direction: column; // Align buttons vertically
+    align-items: center; // Center buttons horizontally
+}
+
+.image-button {
+    width: 70px;
+    height: 70px;
+    border-radius: 23%;
+    margin: 1.2vw;
+    background: rgb(28, 36, 44);
+    opacity: 0.9;
+    color: white;
+    border: solid white 1px;
+}
+
+.image-button:hover {
+    opacity: 1; // Fully opaque when hovered
+}
+
+.red-dot {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    pointer-events: none;
+    z-index: 99999;
+    user-select: none;
+}
+
+
+.overlay {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: black;
+    z-index: 9999;
+}
+
+.fullScreenCloseButton {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    z-index: 1000;
+    padding: 10px 20px;
+    border: none;
+    background: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.blackOverlaySndBtn{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,1);
+    display: block;
+    z-index: 1000;
+}
+
+.delete-button {
+    width: 50px;
+    height: 30px;
+    top: 8px;
+    right: 0px;
+    position: absolute;
+    background: none;
+    color: red;
+    border: none;
+    font-size: 21px;
+    display: none;
+}
+
+.image-wrapper:hover .delete-button {
+    display: block; /* Show the delete button when the image-wrapper is hovered */
+}
