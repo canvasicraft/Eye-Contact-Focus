@@ -233,8 +233,10 @@ document.addEventListener('DOMContentLoaded', function() {
         // Clone the image
         const imgClone = imageElement.cloneNode();
     
-        // Check if the device is a mobile device (e.g., width less than or equal to 768px)
-        if (window.innerWidth <= 768) {
+        // Determine if the device is mobile
+        const isMobile = window.innerWidth <= 768;
+    
+        if (isMobile) {
             imgClone.style.width = '100vw';
             imgClone.style.height = 'auto'; // Maintain aspect ratio
         } else {
@@ -244,17 +246,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
         overlay.appendChild(imgClone);
     
-        // Create a black overlay
-        const blackOverlaySndBtn = document.createElement('div');
-        blackOverlaySndBtn.className = 'blackOverlaySndBtn';
-        overlay.appendChild(blackOverlaySndBtn);
-    
         // Handle the dotPosition passed in or retrieved from localStorage
         const redDot = document.createElement('img');
         redDot.src = 'https://i.ibb.co/J27Q3KX/image.png';
         redDot.className = 'red-dot';
     
-        // If no dotPosition is passed in, attempt to retrieve it from localStorage
         if (!dotPosition) {
             let images = JSON.parse(localStorage.getItem('images'));
             if (!images) images = []; // Fallback if no images are stored
@@ -264,8 +260,14 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     
-        // If dotPosition is found or passed in, position the red dot
         if (dotPosition) {
+            // Adjust position for mobile scaling issues
+            if (isMobile) {
+                const scale = window.innerWidth / imageElement.naturalWidth;
+                dotPosition.x *= scale;
+                dotPosition.y *= scale;
+            }
+    
             redDot.style.position = 'absolute';
             redDot.style.left = `${dotPosition.x - 5}px`; // Adjust by half the size of the dot
             redDot.style.top = `${dotPosition.y - 5}px`;
@@ -309,7 +311,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (redDot) redDot.style.display = 'block';
         }
     
-        // Add a specific button to close the overlay instead of using dblclick on the whole overlay
         const closeButton = document.createElement('button');
         closeButton.textContent = 'Close';
         closeButton.className = 'fullScreenCloseButton';
@@ -320,6 +321,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
         overlay.appendChild(closeButton);
     }
+
 
 
 
