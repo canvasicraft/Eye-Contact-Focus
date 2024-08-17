@@ -125,19 +125,24 @@ document.addEventListener('DOMContentLoaded', function() {
     // Retrieve URL parameters to check if the page was loaded with specific instructions for an image
     const params = new URLSearchParams(window.location.search);
     const imageUrl = params.get('url');
-    const x = params.get('x');
-    const y = params.get('y');
+    const vw = params.get('vw');
+    const vh = params.get('vh');
 
     // If all necessary parameters are present, load and display the image with overlay
-    if (imageUrl && x && y) {
+    if (imageUrl && vw && vh) {
         const img = new Image();
         img.src = imageUrl;
         img.onload = function() {
-            if (imageUrl && x && y) {
-                openFullscreenWithOverlay(img, imageUrl, {x: parseInt(x), y: parseInt(y)});
+            if (imageUrl && vw && vh) {
+                // Calculate pixel values from vw and vh
+                const x = (parseFloat(vw) / 100) * window.innerWidth;
+                const y = (parseFloat(vh) / 100) * window.innerHeight;
+
+                openFullscreenWithOverlay(img, imageUrl, {x: x, y: y});
             }
         };
     }
+
 
     document.getElementById('add-image').addEventListener('click', function() {
         const imageUrl = document.getElementById('image-url').value;
@@ -255,19 +260,15 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.appendChild(overlay);
 
         const imgClone = imageElement.cloneNode();
-        // Check if the device is a mobile device (e.g., width less than or equal to 768px)
         if (window.innerWidth <= 768) {
-            // Set the width to 100vw for mobile devices
             imgClone.style.width = '100vw';
             imgClone.style.height = 'auto'; // Maintain aspect ratio
         } else {
-            // Set the height to 100vh for non-mobile devices
             imgClone.style.height = '100vh';
             imgClone.style.width = 'auto'; // Maintain aspect ratio
         }
 
         overlay.appendChild(imgClone);
-
 
         const redDot = document.createElement('img');
         redDot.src = 'red-dot.png';
@@ -279,8 +280,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const imageInfo = images.find(image => image.url === imageUrl);
         if (imageInfo && imageInfo.dotPosition) {
             dotPosition = imageInfo.dotPosition;
-            redDot.style.left = `${dotPosition.x - 5}px`; // Adjust by half the size of the dot
-            redDot.style.top = `${dotPosition.y - 5}px`;
+            redDot.style.left = `${dotPosition.vw}vw`;
+            redDot.style.top = `${dotPosition.vh}vh`;
             overlay.appendChild(redDot); // Place the red dot immediately if position is found
         }
 
@@ -297,11 +298,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
         imgClone.addEventListener('click', function(event) {
             const rect = imgClone.getBoundingClientRect();
-            const x = event.clientX;
-            const y = event.clientY;
+            const x = event.clientX; // Get the x position relative to the image
+            const y = event.clientY;  // Get the y position relative to the image
 
-            redDot.style.left = `${x - 5}px`; // Assuming the dot has a width of 10px, adjust by half.
-            redDot.style.top = `${y - 5}px`; // Assuming the dot has a height of 10px, adjust by half.
+            // Calculate the position in viewport units
+            const vw = (x / window.innerWidth) * 100;
+            const vh = (y / window.innerHeight) * 100;
+
+            redDot.style.left = `${vw}vw`; // Set the position in vw
+            redDot.style.top = `${vh}vh`;  // Set the position in vh
 
             if (!dotPosition) {
                 overlay.appendChild(redDot);
@@ -310,7 +315,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 overlay.appendChild(redDot);
             }
 
-            dotPosition = { x, y };
+            dotPosition = { vw, vh };
             saveDotPosition(imageUrl, dotPosition);
         });
 
@@ -318,9 +323,6 @@ document.addEventListener('DOMContentLoaded', function() {
             document.body.removeChild(overlay);
         });
     }
-
-
-
 
     function saveDotPosition(imageUrl, position) {
         let images = JSON.parse(localStorage.getItem('images'));
@@ -372,11 +374,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // If dotPosition is found or passed in, position the red dot
         if (dotPosition) {
-            redDot.style.position = 'absolute';
-            redDot.style.left = `${dotPosition.x - 5}px`; // Adjust by half the size of the dot
-            redDot.style.top = `${dotPosition.y - 5}px`;
+            redDot.style.left = `${dotPosition.vw}vw`;
+            redDot.style.top = `${dotPosition.vh}vh`;
             overlay.appendChild(redDot);
         }
+
 
         // Event listeners for mouse and touch events
         document.addEventListener('mousedown', function(event) {
@@ -435,14 +437,13 @@ document.addEventListener('DOMContentLoaded', function() {
         if (imageInfo && imageInfo.dotPosition) {
             const queryParams = new URLSearchParams({
                 url: imageUrl,
-                x: imageInfo.dotPosition.x,
-                y: imageInfo.dotPosition.y
+                vw: imageInfo.dotPosition.vw,
+                vh: imageInfo.dotPosition.vh
             }).toString();
             return `https://canvasicraft.github.io/Eye-Contact-Focus/?${queryParams}`;
         }
         return ''; // Return an empty string if no position is saved
     }
-
 
 
 });
