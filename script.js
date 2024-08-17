@@ -346,68 +346,65 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 
-    function openFullscreenWithOverlay(imageElement, imageUrl, dotPosition = null) {
+   function openFullscreenWithOverlay(imageElement, imageUrl, dotPosition = null) {
          // Create and style the overlay
          const overlay = document.createElement('div');
          overlay.className = 'overlay';
          document.body.appendChild(overlay);
      
-         // Clone the image
-         const imgClone = imageElement.cloneNode();
-     
-         // Determine the aspect ratio of the image
-         const aspectRatio = imageElement.naturalWidth / imageElement.naturalHeight;
-     
-         let scaledWidth, scaledHeight;
-     
-         // Determine whether to fit by width or height based on aspect ratio and screen size
-         if (window.innerWidth / window.innerHeight > aspectRatio) {
-             // Screen is wider relative to the image's aspect ratio, so fit by height
-             scaledHeight = window.innerHeight;
-             scaledWidth = scaledHeight * aspectRatio;
-             imgClone.style.height = `${scaledHeight}px`;
-             imgClone.style.width = `${scaledWidth}px`;
+         // Create or clone the image element
+         let imgClone;
+         if (imageElement) {
+             imgClone = imageElement.cloneNode();
          } else {
-             // Screen is narrower relative to the image's aspect ratio, so fit by width
-             scaledWidth = window.innerWidth;
-             scaledHeight = scaledWidth / aspectRatio;
-             imgClone.style.width = `${scaledWidth}px`;
-             imgClone.style.height = `${scaledHeight}px`;
+             imgClone = document.createElement('img');
+             imgClone.src = imageUrl;
          }
      
+         // Determine the aspect ratio of the image
+         imgClone.onload = function() {
+             const aspectRatio = imgClone.naturalWidth / imgClone.naturalHeight;
+     
+             let scaledWidth, scaledHeight;
+     
+             // Determine whether to fit by width or height based on aspect ratio and screen size
+             if (window.innerWidth / window.innerHeight > aspectRatio) {
+                 // Screen is wider relative to the image's aspect ratio, so fit by height
+                 scaledHeight = window.innerHeight;
+                 scaledWidth = scaledHeight * aspectRatio;
+                 imgClone.style.height = `${scaledHeight}px`;
+                 imgClone.style.width = `${scaledWidth}px`;
+             } else {
+                 // Screen is narrower relative to the image's aspect ratio, so fit by width
+                 scaledWidth = window.innerWidth;
+                 scaledHeight = scaledWidth / aspectRatio;
+                 imgClone.style.width = `${scaledWidth}px`;
+                 imgClone.style.height = `${scaledHeight}px`;
+             }
+     
+             // Position the red dot after the image has loaded and dimensions are known
+             if (dotPosition) {
+                 const rect = imgClone.getBoundingClientRect();
+                 const x = dotPosition.x * rect.width + rect.left;
+                 const y = dotPosition.y * rect.height + rect.top;
+     
+                 const redDot = document.createElement('img');
+                 redDot.src = 'https://i.ibb.co/J27Q3KX/image.png';
+                 redDot.className = 'red-dot';
+                 redDot.style.position = 'absolute';
+                 redDot.style.left = `${x - 5}px`; // Adjust by half the size of the dot
+                 redDot.style.top = `${y - 5}px`;
+                 overlay.appendChild(redDot);
+             }
+         };
+     
+         // Append the image to the overlay after setting up the onload event
          overlay.appendChild(imgClone);
      
          // Create a black overlay
          const blackOverlaySndBtn = document.createElement('div');
          blackOverlaySndBtn.className = 'blackOverlaySndBtn';
          overlay.appendChild(blackOverlaySndBtn);
-     
-         // Handle the dotPosition passed in or retrieved from localStorage
-         const redDot = document.createElement('img');
-         redDot.src = 'https://i.ibb.co/J27Q3KX/image.png'; // Updated URL for the red dot image
-         redDot.className = 'red-dot';
-     
-         // If no dotPosition is passed in, attempt to retrieve it from localStorage
-         if (!dotPosition) {
-             let images = JSON.parse(localStorage.getItem('images'));
-             if (!images) images = []; // Fallback if no images are stored
-             const imageInfo = images.find(image => image.url === imageUrl);
-             if (imageInfo && imageInfo.dotPosition) {
-                 dotPosition = imageInfo.dotPosition;
-             }
-         }
-     
-         // If dotPosition is found or passed in, position the red dot
-         if (dotPosition) {
-             const rect = imgClone.getBoundingClientRect();
-             const x = dotPosition.x * rect.width + rect.left;
-             const y = dotPosition.y * rect.height + rect.top;
-     
-             redDot.style.position = 'absolute';
-             redDot.style.left = `${x - 5}px`; // Adjust by half the size of the dot
-             redDot.style.top = `${y - 5}px`;
-             overlay.appendChild(redDot);
-         }
      
          // Event listeners for mouse and touch events
          document.addEventListener('mousedown', function(event) {
@@ -457,6 +454,7 @@ document.addEventListener('DOMContentLoaded', function() {
      
          overlay.appendChild(closeButton);
      }
+
 
 
     //Used for the image share, this generate the link in such a way that it opens in (openFullScreenOverlay)
