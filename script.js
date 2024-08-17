@@ -287,7 +287,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Create close button
         const closeButton = document.createElement('button');
-        closeButton.textContent = 'Close';
+        closeButton.innerHTML = '<i class="fa-solid fa-xmark"></i>';
         closeButton.className = 'fullScreenCloseButton';
 
         closeButton.addEventListener('click', function() {
