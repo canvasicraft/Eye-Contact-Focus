@@ -255,6 +255,8 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.appendChild(overlay);
 
         const imgClone = imageElement.cloneNode();
+        let originalWidth, originalHeight;
+
         // Check if the device is a mobile device (e.g., width less than or equal to 768px)
         if (window.innerWidth <= 768) {
             // Set the width to 100vw for mobile devices
@@ -268,6 +270,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         overlay.appendChild(imgClone);
 
+        // Capture the original dimensions after the image is appended
+        const rect = imgClone.getBoundingClientRect();
+        originalWidth = rect.width;
+        originalHeight = rect.height;
 
         const redDot = document.createElement('img');
         redDot.src = 'red-dot.png';
@@ -278,9 +284,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const images = JSON.parse(localStorage.getItem('images'));
         const imageInfo = images.find(image => image.url === imageUrl);
         if (imageInfo && imageInfo.dotPosition) {
+
             dotPosition = imageInfo.dotPosition;
-            redDot.style.left = `${dotPosition.x - 5}px`; // Adjust by half the size of the dot
-            redDot.style.top = `${dotPosition.y - 5}px`;
+
+            const x = dotPosition.x * rect.width + rect.left;
+            const y = dotPosition.y * rect.height + rect.top;
+
+            redDot.style.left = `${x - 5}px`; // Adjust by half the size of the dot
+            redDot.style.top = `${y - 5}px`;
             overlay.appendChild(redDot); // Place the red dot immediately if position is found
         }
 
@@ -300,6 +311,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const x = event.clientX;
             const y = event.clientY;
 
+            // Normalize the coordinates based on the current image size
+            const normalizedX = (x - rect.left) / rect.width;
+            const normalizedY = (y - rect.top) / rect.height;
+
             redDot.style.left = `${x - 5}px`; // Assuming the dot has a width of 10px, adjust by half.
             redDot.style.top = `${y - 5}px`; // Assuming the dot has a height of 10px, adjust by half.
 
@@ -310,7 +325,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 overlay.appendChild(redDot);
             }
 
-            dotPosition = { x, y };
+            dotPosition = { x: normalizedX, y: normalizedY };
             saveDotPosition(imageUrl, dotPosition);
         });
 
@@ -318,6 +333,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.body.removeChild(overlay);
         });
     }
+
 
 
 
@@ -339,14 +355,26 @@ document.addEventListener('DOMContentLoaded', function() {
         // Clone the image
         const imgClone = imageElement.cloneNode();
 
-        // Check if the device is a mobile device (e.g., width less than or equal to 768px)
-        if (window.innerWidth <= 768) {
-            imgClone.style.width = '100vw';
-            imgClone.style.height = 'auto'; // Maintain aspect ratio
+         // Determine the aspect ratio of the image
+        const aspectRatio = imageElement.naturalWidth / imageElement.naturalHeight;
+
+        let scaledWidth, scaledHeight;
+
+        // Determine whether to fit by width or height based on aspect ratio and screen size
+        if (window.innerWidth / window.innerHeight > aspectRatio) {
+            // Screen is wider relative to the image's aspect ratio, so fit by height
+            scaledHeight = window.innerHeight;
+            scaledWidth = scaledHeight * aspectRatio;
+            imgClone.style.height = `${scaledHeight}px`;
+            imgClone.style.width = `${scaledWidth}px`;
         } else {
-            imgClone.style.height = '100vh';
-            imgClone.style.width = 'auto'; // Maintain aspect ratio
+            // Screen is narrower relative to the image's aspect ratio, so fit by width
+            scaledWidth = window.innerWidth;
+            scaledHeight = scaledWidth / aspectRatio;
+            imgClone.style.width = `${scaledWidth}px`;
+            imgClone.style.height = `${scaledHeight}px`;
         }
+
 
         overlay.appendChild(imgClone);
 
@@ -372,9 +400,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // If dotPosition is found or passed in, position the red dot
         if (dotPosition) {
+            const rect = imgClone.getBoundingClientRect();
+            const x = dotPosition.x * rect.width + rect.left;
+            const y = dotPosition.y * rect.height + rect.top;
+
             redDot.style.position = 'absolute';
-            redDot.style.left = `${dotPosition.x - 5}px`; // Adjust by half the size of the dot
-            redDot.style.top = `${dotPosition.y - 5}px`;
+            redDot.style.left = `${x - 5}px`; // Adjust by half the size of the dot
+            redDot.style.top = `${y - 5}px`;
             overlay.appendChild(redDot);
         }
 
@@ -442,7 +474,5 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         return ''; // Return an empty string if no position is saved
     }
-
-
-
+     
 });
