@@ -224,35 +224,35 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 
-    function openFullscreenWithOverlay(imageElement, imageUrl, dotPosition = null) {
+     function openFullscreenWithOverlay(imageElement, imageUrl, dotPosition = null) {
         // Create and style the overlay
         const overlay = document.createElement('div');
         overlay.className = 'overlay';
         document.body.appendChild(overlay);
-    
+
         // Clone the image
         const imgClone = imageElement.cloneNode();
-    
+
         // Check if the device is a mobile device (e.g., width less than or equal to 768px)
         if (window.innerWidth <= 768) {
+            // Set the width to 100vw for mobile devices
             imgClone.style.width = '100vw';
             imgClone.style.height = 'auto'; // Maintain aspect ratio
         } else {
+            // Set the height to 100vh for non-mobile devices
             imgClone.style.height = '100vh';
             imgClone.style.width = 'auto'; // Maintain aspect ratio
         }
-    
+
         overlay.appendChild(imgClone);
-    
+
         // Create a black overlay
         const blackOverlaySndBtn = document.createElement('div');
         blackOverlaySndBtn.className = 'blackOverlaySndBtn';
         overlay.appendChild(blackOverlaySndBtn);
-    
-        // Retrieve saved dot position from localStorage
-        let images = JSON.parse(localStorage.getItem('images'));
-        if (!images) images = []; // Fallback if no images are stored
-    
+
+        // Retrieve saved dot position from local storage
+        const images = JSON.parse(localStorage.getItem('images'));
         const imageInfo = images.find(image => image.url === imageUrl);
         const redDot = document.createElement('img');
         redDot.src = 'https://i.ibb.co/J27Q3KX/image.png';
@@ -264,57 +264,60 @@ document.addEventListener('DOMContentLoaded', function() {
             redDot.style.top = `${dotPosition.y - 5}px`;
             overlay.appendChild(redDot);
         }
-    
-        if (!dotPosition && imageInfo && imageInfo.dotPosition) {
-            dotPosition = imageInfo.dotPosition;
+        if (!dotPosition) {
+            const images = JSON.parse(localStorage.getItem('images'));
+            const imageInfo = images.find(image => image.url === imageUrl);
+            if (imageInfo && imageInfo.dotPosition) {
+                dotPosition = imageInfo.dotPosition;
+            }
         }
-    
+
         // Event listeners for mouse and touch events
         document.addEventListener('mousedown', function(event) {
-            if (event.button === 0 && event.target === blackOverlaySndBtn) {
+            if (event.button === 0 && (event.target === blackOverlaySndBtn)) {
                 hideOverlayAndRedDot();
             }
         });
-    
+
         document.addEventListener('mouseup', function(event) {
             if (event.button === 0 && (event.target === imgClone || imgClone.contains(event.target) || event.target === overlay)) {
                 showOverlayAndRedDot();
             }
         });
-    
+
         document.addEventListener('touchstart', function(event) {
             if (event.target === blackOverlaySndBtn) {
                 hideOverlayAndRedDot();
             }
         });
-    
+
         document.addEventListener('touchend', function(event) {
             if (event.target === imgClone || imgClone.contains(event.target) || event.target === overlay) {
                 showOverlayAndRedDot();
             }
         });
-    
+
         // Function to hide the overlay and red dot
         function hideOverlayAndRedDot() {
             blackOverlaySndBtn.style.display = 'none';
             if (redDot) redDot.style.display = 'none';
         }
-    
+
         // Function to show the overlay and red dot
         function showOverlayAndRedDot() {
             blackOverlaySndBtn.style.display = 'block';
             if (redDot) redDot.style.display = 'block';
         }
-    
+
         // Add a specific button to close the overlay instead of using dblclick on the whole overlay
         const closeButton = document.createElement('button');
         closeButton.textContent = 'Close';
         closeButton.className = 'fullScreenCloseButton';
-    
+
         closeButton.addEventListener('click', function() {
             document.body.removeChild(overlay);
         });
-    
+
         overlay.appendChild(closeButton);
     }
 
