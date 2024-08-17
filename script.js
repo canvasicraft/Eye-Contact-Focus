@@ -379,8 +379,8 @@ document.addEventListener('DOMContentLoaded', function() {
                  const imgRect = imgClone.getBoundingClientRect();
      
                  // Calculate the correct position of the red dot based on the image's dimensions and the stored vw/vh values
-                 const dotX = (dotPosition.vw / 100) * window.innerWidth;
-                 const dotY = (dotPosition.vh / 100) * window.innerHeight;
+                 const dotX = (dotPosition.vw / 100) * imgRect.width;
+                 const dotY = (dotPosition.vh / 100) * imgRect.height;
      
                  redDot.style.left = `${dotX}px`;
                  redDot.style.top = `${dotY}px`;
