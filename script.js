@@ -347,121 +347,117 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     function openFullscreenWithOverlay(imageElement, imageUrl, dotPosition = null) {
-         // Create and style the overlay
-         const overlay = document.createElement('div');
-         overlay.className = 'overlay';
-         document.body.appendChild(overlay);
-     
-         // If no imageElement is provided, create one using imageUrl
-         if (!imageElement) {
-             imageElement = document.createElement('img');
-             imageElement.src = imageUrl;
-             imageElement.onload = () => scaleAndPositionImage(imageElement);
-         } else {
-             scaleAndPositionImage(imageElement);
-         }
-     
-         function scaleAndPositionImage(img) {
-             // Clone the image
-             const imgClone = img.cloneNode();
-     
-             // Determine the aspect ratio of the image
-             const aspectRatio = img.naturalWidth / img.naturalHeight;
-     
-             let scaledWidth, scaledHeight;
-     
-             // Determine whether to fit by width or height based on aspect ratio and screen size
-             if (window.innerWidth / window.innerHeight > aspectRatio) {
-                 // Screen is wider relative to the image's aspect ratio, so fit by height
-                 scaledHeight = window.innerHeight;
-                 scaledWidth = scaledHeight * aspectRatio;
-                 imgClone.style.height = `${scaledHeight}px`;
-                 imgClone.style.width = `${scaledWidth}px`;
-             } else {
-                 // Screen is narrower relative to the image's aspect ratio, so fit by width
-                 scaledWidth = window.innerWidth;
-                 scaledHeight = scaledWidth / aspectRatio;
-                 imgClone.style.width = `${scaledWidth}px`;
-                 imgClone.style.height = `${scaledHeight}px`;
-             }
-     
-             overlay.appendChild(imgClone);
-             handleDotPosition(imgClone);
-         }
-     
-         function handleDotPosition(imgClone) {
-             const redDot = document.createElement('img');
-             redDot.src = 'https://i.ibb.co/J27Q3KX/image.png'; // URL for the red dot image
-             redDot.className = 'red-dot';
-     
-             if (!dotPosition) {
-                 let images = JSON.parse(localStorage.getItem('images'));
-                 if (!images) images = []; // Fallback if no images are stored
-                 const imageInfo = images.find(image => image.url === imageUrl);
-                 if (imageInfo && imageInfo.dotPosition) {
-                     dotPosition = imageInfo.dotPosition;
-                 }
-             }
-     
-             if (dotPosition) {
-                 const rect = imgClone.getBoundingClientRect();
-                 const x = dotPosition.x * rect.width + rect.left;
-                 const y = dotPosition.y * rect.height + rect.top;
-     
-                 redDot.style.position = 'absolute';
-                 redDot.style.left = `${x - 5}px`; // Adjust by half the size of the dot
-                 redDot.style.top = `${y - 5}px`;
-                 overlay.appendChild(redDot);
-             }
-         }
-     
-         addOverlayEventListeners();
-         function addOverlayEventListeners() {
-             document.addEventListener('mousedown', function(event) {
-                 if (event.button === 0 && event.target === overlay) {
-                     hideOverlayAndRedDot();
-                 }
-             });
-     
-             document.addEventListener('mouseup', function(event) {
-                 if (event.button === 0 && (event.target === imgClone || imgClone.contains(event.target))) {
-                     showOverlayAndRedDot();
-                 }
-             });
-     
-             document.addEventListener('touchstart', function(event) {
-                 if (event.target === overlay) {
-                     hideOverlayAndRedDot();
-                 }
-             });
-     
-             document.addEventListener('touchend', function(event) {
-                 if (event.target === imgClone || imgClone.contains(event.target)) {
-                     showOverlayAndRedDot();
-                 }
-             });
-         }
-     
-         function hideOverlayAndRedDot() {
-             overlay.style.display = 'none';
-         }
-     
-         function showOverlayAndRedDot() {
-             overlay.style.display = 'block';
-         }
-     
-         createCloseButton();
-         function createCloseButton() {
-             const closeButton = document.createElement('button');
-             closeButton.innerHTML = "<i class='fa fa-times'></i>";
-             closeButton.className = 'fullScreenCloseButton';
-             closeButton.addEventListener('click', function() {
-                 document.body.removeChild(overlay);
-             });
-             overlay.appendChild(closeButton);
-         }
-     }
+        // Create and style the overlay
+        const overlay = document.createElement('div');
+        overlay.className = 'overlay';
+        document.body.appendChild(overlay);
 
+        // Clone the image
+        const imgClone = imageElement.cloneNode();
+
+         // Determine the aspect ratio of the image
+        const aspectRatio = imageElement.naturalWidth / imageElement.naturalHeight;
+
+        let scaledWidth, scaledHeight;
+
+        // Determine whether to fit by width or height based on aspect ratio and screen size
+        if (window.innerWidth / window.innerHeight > aspectRatio) {
+            // Screen is wider relative to the image's aspect ratio, so fit by height
+            scaledHeight = window.innerHeight;
+            scaledWidth = scaledHeight * aspectRatio;
+            imgClone.style.height = `${scaledHeight}px`;
+            imgClone.style.width = `${scaledWidth}px`;
+        } else {
+            // Screen is narrower relative to the image's aspect ratio, so fit by width
+            scaledWidth = window.innerWidth;
+            scaledHeight = scaledWidth / aspectRatio;
+            imgClone.style.width = `${scaledWidth}px`;
+            imgClone.style.height = `${scaledHeight}px`;
+        }
+
+
+        overlay.appendChild(imgClone);
+
+        // Create a black overlay
+        const blackOverlaySndBtn = document.createElement('div');
+        blackOverlaySndBtn.className = 'blackOverlaySndBtn';
+        overlay.appendChild(blackOverlaySndBtn);
+
+        // Handle the dotPosition passed in or retrieved from localStorage
+        const redDot = document.createElement('img');
+        redDot.src = 'https://i.ibb.co/J27Q3KX/image.png'; // Updated URL for the red dot image
+        redDot.className = 'red-dot';
+
+        // If no dotPosition is passed in, attempt to retrieve it from localStorage
+        if (!dotPosition) {
+            let images = JSON.parse(localStorage.getItem('images'));
+            if (!images) images = []; // Fallback if no images are stored
+            const imageInfo = images.find(image => image.url === imageUrl);
+            if (imageInfo && imageInfo.dotPosition) {
+                dotPosition = imageInfo.dotPosition;
+            }
+        }
+
+        // If dotPosition is found or passed in, position the red dot
+        if (dotPosition) {
+            const rect = imgClone.getBoundingClientRect();
+            const x = dotPosition.x * rect.width + rect.left;
+            const y = dotPosition.y * rect.height + rect.top;
+
+            redDot.style.position = 'absolute';
+            redDot.style.left = `${x - 5}px`; // Adjust by half the size of the dot
+            redDot.style.top = `${y - 5}px`;
+            overlay.appendChild(redDot);
+        }
+
+        // Event listeners for mouse and touch events
+        document.addEventListener('mousedown', function(event) {
+            if (event.button === 0 && event.target === blackOverlaySndBtn) {
+                hideOverlayAndRedDot();
+            }
+        });
+
+        document.addEventListener('mouseup', function(event) {
+            if (event.button === 0 && (event.target === imgClone || imgClone.contains(event.target) || event.target === overlay)) {
+                showOverlayAndRedDot();
+            }
+        });
+
+        document.addEventListener('touchstart', function(event) {
+            if (event.target === blackOverlaySndBtn) {
+                hideOverlayAndRedDot();
+            }
+        });
+
+        document.addEventListener('touchend', function(event) {
+            if (event.target === imgClone || imgClone.contains(event.target) || event.target === overlay) {
+                showOverlayAndRedDot();
+            }
+        });
+
+        // Function to hide the overlay and red dot
+        function hideOverlayAndRedDot() {
+            blackOverlaySndBtn.style.display = 'none';
+            if (redDot) redDot.style.display = 'none';
+        }
+
+        // Function to show the overlay and red dot
+        function showOverlayAndRedDot() {
+            blackOverlaySndBtn.style.display = 'block';
+            if (redDot) redDot.style.display = 'block';
+        }
+
+        // Add a specific button to close the overlay instead of using dblclick on the whole overlay
+        const closeButton = document.createElement('button');
+        closeButton.innerHTML = "<i class='fa-solid fa-xmark'></i>";
+        closeButton.className = 'fullScreenCloseButton';
+
+        closeButton.addEventListener('click', function() {
+            document.body.removeChild(overlay);
+        });
+
+        overlay.appendChild(closeButton);
+    }
 
 
     //Used for the image share, this generate the link in such a way that it opens in (openFullScreenOverlay)
