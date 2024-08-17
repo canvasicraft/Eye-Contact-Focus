@@ -286,7 +286,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Create close button
         const closeButton = document.createElement('button');
-        closeButton.textContent = 'Close';
+        closeButton.innerHTML = "<i class='fa-solid fa-xmark'></i>";
         closeButton.className = 'fullScreenCloseButton';
 
         closeButton.addEventListener('click', function() {
@@ -417,7 +417,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
         // Add a specific button to close the overlay instead of using dblclick on the whole overlay
         const closeButton = document.createElement('button');
-        closeButton.textContent = 'Close';
+        closeButton.innerHTML = "<i class='fa-solid fa-xmark'></i>";
         closeButton.className = 'fullScreenCloseButton';
     
         closeButton.addEventListener('click', function() {
