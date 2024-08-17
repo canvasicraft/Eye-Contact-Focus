@@ -130,14 +130,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // If all necessary parameters are present, load and display the image with overlay
     if (imageUrl && x && y) {
-        const img = new Image();
-        img.src = imageUrl;
-        img.onload = function() {
-            if (imageUrl && x && y) {
-                openFullscreenWithOverlay(img, imageUrl, {x: parseInt(x), y: parseInt(y)});
-            }
-        };
-    }
+         const img = new Image();
+         img.src = imageUrl;
+         img.onload = function() {
+             // Ensure that `x` and `y` are correctly parsed as floating-point numbers
+             const xPos = parseFloat(x);
+             const yPos = parseFloat(y);
+     
+             if (imageUrl && !isNaN(xPos) && !isNaN(yPos)) {
+                 openFullscreenWithOverlay(img, imageUrl, {x: xPos, y: yPos});
+             }
+         };
+     }
+
 
     document.getElementById('add-image').addEventListener('click', function() {
         const imageUrl = document.getElementById('image-url').value;
