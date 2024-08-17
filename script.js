@@ -295,24 +295,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
         overlay.appendChild(closeButton);
 
-       imgClone.addEventListener('click', function(event) {
+        imgClone.addEventListener('click', function(event) {
             const rect = imgClone.getBoundingClientRect();
             const x = event.clientX;
             const y = event.clientY;
 
-            // Get the total width and height of the device's screen
-            const totalWidth = window.innerWidth;
-            const totalHeight = window.innerHeight;
-
-            // Normalize the x and y coordinates
-            const normalizedX = (x / totalWidth);
-            const normalizedY = (y / totalHeight);
-
-            // Adjust redDot position based on the original x and y
             redDot.style.left = `${x - 5}px`; // Assuming the dot has a width of 10px, adjust by half.
             redDot.style.top = `${y - 5}px`; // Assuming the dot has a height of 10px, adjust by half.
 
-            // Append or re-append the redDot to the overlay
             if (!dotPosition) {
                 overlay.appendChild(redDot);
             } else {
@@ -320,8 +310,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 overlay.appendChild(redDot);
             }
 
-            // Save the normalized position
-            dotPosition = { x: normalizedX, y: normalizedY };
+            dotPosition = { x, y };
             saveDotPosition(imageUrl, dotPosition);
         });
 
@@ -383,20 +372,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // If dotPosition is found or passed in, position the red dot
         if (dotPosition) {
-         // Get the total width and height of the device's screen
-            const totalWidth = window.innerWidth;
-            const totalHeight = window.innerHeight;
-
-            // Calculate the absolute position based on the normalized dotPosition
-            const absoluteX = dotPosition.x * totalWidth;
-            const absoluteY = dotPosition.y * totalHeight;
-
-            // Position the red dot on the screen
             redDot.style.position = 'absolute';
-            redDot.style.left = `${absoluteX - 5}px`; // Adjust by half the size of the dot
-            redDot.style.top = `${absoluteY - 5}px`;
-
-            // Append the red dot to the overlay
+            redDot.style.left = `${dotPosition.x - 5}px`; // Adjust by half the size of the dot
+            redDot.style.top = `${dotPosition.y - 5}px`;
             overlay.appendChild(redDot);
         }
 
