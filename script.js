@@ -255,7 +255,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
         const imageInfo = images.find(image => image.url === imageUrl);
         const redDot = document.createElement('img');
-        redDot.src = 'https://raw.githubusercontent.com/canvasicraft/Eye-Contact-Focus/0a86dc8e5e8cfc5762e8d35a1000ed8d82093cad/red-dot.png';
+        redDot.src = 'https://i.ibb.co/J27Q3KX/image.png';
         redDot.className = 'red-dot';
         if (imageInfo && imageInfo.dotPosition) {
             const dotPosition = imageInfo.dotPosition;
