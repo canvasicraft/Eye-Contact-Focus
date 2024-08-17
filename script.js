@@ -249,24 +249,27 @@ document.addEventListener('DOMContentLoaded', function() {
         blackOverlaySndBtn.className = 'blackOverlaySndBtn';
         overlay.appendChild(blackOverlaySndBtn);
     
-        // Retrieve saved dot position from localStorage
-        let images = JSON.parse(localStorage.getItem('images'));
-        if (!images) images = []; // Fallback if no images are stored
-    
-        const imageInfo = images.find(image => image.url === imageUrl);
+        // Handle the dotPosition passed in or retrieved from localStorage
         const redDot = document.createElement('img');
         redDot.src = 'https://i.ibb.co/J27Q3KX/image.png';
         redDot.className = 'red-dot';
-        if (imageInfo && imageInfo.dotPosition) {
-            const dotPosition = imageInfo.dotPosition;
+    
+        // If no dotPosition is passed in, attempt to retrieve it from localStorage
+        if (!dotPosition) {
+            let images = JSON.parse(localStorage.getItem('images'));
+            if (!images) images = []; // Fallback if no images are stored
+            const imageInfo = images.find(image => image.url === imageUrl);
+            if (imageInfo && imageInfo.dotPosition) {
+                dotPosition = imageInfo.dotPosition;
+            }
+        }
+    
+        // If dotPosition is found or passed in, position the red dot
+        if (dotPosition) {
             redDot.style.position = 'absolute';
             redDot.style.left = `${dotPosition.x - 5}px`; // Adjust by half the size of the dot
             redDot.style.top = `${dotPosition.y - 5}px`;
             overlay.appendChild(redDot);
-        }
-    
-        if (!dotPosition && imageInfo && imageInfo.dotPosition) {
-            dotPosition = imageInfo.dotPosition;
         }
     
         // Event listeners for mouse and touch events
@@ -317,6 +320,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
         overlay.appendChild(closeButton);
     }
+
 
 
 
