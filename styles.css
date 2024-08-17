@@ -287,6 +287,6 @@ body {
 /* Small mobile devices */
 @media only screen and (max-width: 480px) {
     .wrapper {
-        margin-top: 17vw;
+        margin-top: 22vw;
     }
 }
