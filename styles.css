@@ -199,6 +199,12 @@ body {
     display: block;
     z-index: 1000;
 }
+/*This is a transparent overlay on the image to prevent the drag*/
+
+.transparentImageOverlay{
+
+}
+
 
 .delete-button {
     width: 50px;
@@ -293,6 +299,21 @@ body {
 /* Small mobile devices */
 @media only screen and (max-width: 480px) {
     .wrapper {
-        margin-top: 22vw;
+        margin-top: 17vw;
     }
+}
+
+.instructionText {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 20px;
+    flex-direction: column;
+    color: white;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
 }
