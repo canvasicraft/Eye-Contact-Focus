@@ -136,7 +136,7 @@ document.addEventListener('DOMContentLoaded', function() {
              // Ensure that `x` and `y` are correctly parsed as floating-point numbers
              const xPos = parseFloat(x);
              const yPos = parseFloat(y);
-     
+
              if (imageUrl && !isNaN(xPos) && !isNaN(yPos)) {
                  openFullscreenWithOverlay(img, imageUrl, {x: xPos, y: yPos});
              }
@@ -260,6 +260,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.appendChild(overlay);
 
         const imgClone = imageElement.cloneNode();
+
         let originalWidth, originalHeight;
 
         // Check if the device is a mobile device (e.g., width less than or equal to 768px)
@@ -340,9 +341,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 
-
-
-
     function saveDotPosition(imageUrl, position) {
         let images = JSON.parse(localStorage.getItem('images'));
         const imageIndex = images.findIndex(image => image.url === imageUrl);
@@ -352,13 +350,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     function openFullscreenWithOverlay(imageElement, imageUrl, dotPosition = null) {
-        // Create and style the overlay
+       let timerStart = null;
+       let timerEnd = null;
+
+       // Create and style the overlay
         const overlay = document.createElement('div');
         overlay.className = 'overlay';
         document.body.appendChild(overlay);
 
         // Clone the image
         const imgClone = imageElement.cloneNode();
+        imgClone.style.pointerEvents = 'none';
 
          // Determine the aspect ratio of the image
         const aspectRatio = imageElement.naturalWidth / imageElement.naturalHeight;
@@ -387,6 +389,26 @@ document.addEventListener('DOMContentLoaded', function() {
         const blackOverlaySndBtn = document.createElement('div');
         blackOverlaySndBtn.className = 'blackOverlaySndBtn';
         overlay.appendChild(blackOverlaySndBtn);
+
+        // Create the main instructionText div:
+        // which includes the <p> and the <div> You lasted...</div> then its added into the main
+        const instructionText = document.createElement('div');
+        instructionText.className = 'instructionText';
+        const instructions = document.createElement('p');
+        instructions.innerHTML = `
+            Focus your eyes on the red dot, then tap and hold to reveal the image.<br>
+            Don't move your eyes! Let go as soon as you do.<br>
+        `;
+        const timer = document.createElement('div');
+        timer.className = 'timer';
+        timer.innerHTML = `You lasted <span id="lasting-time">0</span> sec`;
+
+        // Append the paragraph and timer to the instructionText div
+        instructionText.appendChild(instructions);
+        instructionText.appendChild(timer);
+
+        // Append the instructionText div to the blackOverlaySndBtn
+        blackOverlaySndBtn.appendChild(instructionText);
 
         // Handle the dotPosition passed in or retrieved from localStorage
         const redDot = document.createElement('img');
@@ -444,12 +466,16 @@ document.addEventListener('DOMContentLoaded', function() {
         function hideOverlayAndRedDot() {
             blackOverlaySndBtn.style.display = 'none';
             if (redDot) redDot.style.display = 'none';
+            timerStart = Date.now(); // Start the timer
         }
 
         // Function to show the overlay and red dot
         function showOverlayAndRedDot() {
             blackOverlaySndBtn.style.display = 'block';
             if (redDot) redDot.style.display = 'block';
+            timerEnd = Date.now(); // Stop the timer
+            const lastingTime = ((timerEnd - timerStart) / 1000).toFixed(2); // Calculate the time in seconds
+            document.getElementById('lasting-time').textContent = lastingTime; // Display the time and initialize lasting-time
         }
 
         // Add a specific button to close the overlay instead of using dblclick on the whole overlay
