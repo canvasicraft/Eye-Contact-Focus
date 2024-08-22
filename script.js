@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function() {
          const img = new Image();
          img.src = imageUrl;
          img.onload = function() {
-             // Ensure that `x` and `y` are correctly parsed as floating-point numbers
+             
              const xPos = parseFloat(x);
              const yPos = parseFloat(y);
 
@@ -185,7 +185,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const buttonContainer = document.createElement('div');
         buttonContainer.className = 'button-container';
 
-        // Create three buttons
+        
         const buttonActions = [
             {
                 text: 'Place Red Dot',
@@ -202,7 +202,7 @@ document.addEventListener('DOMContentLoaded', function() {
             {
                 text: 'Share Link',
                 action: function() {
-                    const imageUrl = imgElem.src;  // Ensures it gets the correct URL from the image element
+                    const imageUrl = imgElem.src; 
                     const shareLink = generateShareLink(imageUrl);
                     if (shareLink) {
                         navigator.clipboard.writeText(shareLink).then(() => {
@@ -228,10 +228,10 @@ document.addEventListener('DOMContentLoaded', function() {
         // Add delete button
         const deleteButton = document.createElement('button');
         deleteButton.className = 'delete-button';
-        deleteButton.innerHTML = '<i class="fa-solid fa-trash"></i>'; // Set the innerHTML to include the Font Awesome icon
+        deleteButton.innerHTML = '<i class="fa-solid fa-trash"></i>';
         deleteButton.addEventListener('click', function() {
-            removeImageFromStorage(url); // Call a function to handle the removal from storage
-            itemElem.remove(); // Remove the element from the DOM
+            removeImageFromStorage(url);
+            itemElem.remove();
         });
 
         imgElem.onload = function() {
@@ -263,15 +263,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
         let originalWidth, originalHeight;
 
-        // Check if the device is a mobile device (e.g., width less than or equal to 768px)
+        // Check if the device is a mobile device
         if (window.innerWidth <= 768) {
             // Set the width to 100vw for mobile devices
             imgClone.style.width = '100vw';
-            imgClone.style.height = 'auto'; // Maintain aspect ratio
+            imgClone.style.height = 'auto';
         } else {
             // Set the height to 100vh for non-mobile devices
             imgClone.style.height = '100vh';
-            imgClone.style.width = 'auto'; // Maintain aspect ratio
+            imgClone.style.width = 'auto';
         }
 
         overlay.appendChild(imgClone);
@@ -298,7 +298,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             redDot.style.left = `${x - 5}px`; // Adjust by half the size of the dot
             redDot.style.top = `${y - 5}px`;
-            overlay.appendChild(redDot); // Place the red dot immediately if position is found
+            overlay.appendChild(redDot);
         }
 
         // Create close button
@@ -322,7 +322,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const normalizedY = (y - rect.top) / rect.height;
 
             redDot.style.left = `${x - 5}px`; // Assuming the dot has a width of 10px, adjust by half.
-            redDot.style.top = `${y - 5}px`; // Assuming the dot has a height of 10px, adjust by half.
+            redDot.style.top = `${y - 5}px`; 
 
             if (!dotPosition) {
                 overlay.appendChild(redDot);
@@ -412,7 +412,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Handle the dotPosition passed in or retrieved from localStorage
         const redDot = document.createElement('img');
-        redDot.src = 'https://i.ibb.co/J27Q3KX/image.png'; // Updated URL for the red dot image
+        redDot.src = 'https://i.ibb.co/J27Q3KX/image.png';
         redDot.className = 'red-dot';
 
         // If no dotPosition is passed in, attempt to retrieve it from localStorage
@@ -432,7 +432,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const y = dotPosition.y * rect.height + rect.top;
 
             redDot.style.position = 'absolute';
-            redDot.style.left = `${x - 5}px`; // Adjust by half the size of the dot
+            redDot.style.left = `${x - 5}px`;
             redDot.style.top = `${y - 5}px`;
             overlay.appendChild(redDot);
         }
@@ -466,7 +466,7 @@ document.addEventListener('DOMContentLoaded', function() {
         function hideOverlayAndRedDot() {
             blackOverlaySndBtn.style.display = 'none';
             if (redDot) redDot.style.display = 'none';
-            timerStart = Date.now(); // Start the timer
+            timerStart = Date.now();
         }
 
         // Function to show the overlay and red dot
@@ -474,8 +474,8 @@ document.addEventListener('DOMContentLoaded', function() {
             blackOverlaySndBtn.style.display = 'block';
             if (redDot) redDot.style.display = 'block';
             timerEnd = Date.now(); // Stop the timer
-            const lastingTime = ((timerEnd - timerStart) / 1000).toFixed(2); // Calculate the time in seconds
-            document.getElementById('lasting-time').textContent = lastingTime; // Display the time and initialize lasting-time
+            const lastingTime = ((timerEnd - timerStart) / 1000).toFixed(2);
+            document.getElementById('lasting-time').textContent = lastingTime;
         }
 
         // Add a specific button to close the overlay instead of using dblclick on the whole overlay
@@ -503,7 +503,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }).toString();
             return `https://canvasicraft.github.io/EyeCandy/?${queryParams}`;
         }
-        return ''; // Return an empty string if no position is saved
+        return '';
     }
 
 });
