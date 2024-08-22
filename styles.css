@@ -293,6 +293,11 @@ body {
     .image-button {
         margin: 1.9vw;
     }
+    .eyeCandyLogo > img {
+        top: 1px !important;
+        right: 9px !important;
+        height: 15vw !important;
+    }
 
 }
 
@@ -326,4 +331,3 @@ body {
     height: 5.98vw;
     border-radius: 14px;
 }
-
