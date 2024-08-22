@@ -501,7 +501,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 x: imageInfo.dotPosition.x,
                 y: imageInfo.dotPosition.y
             }).toString();
-            return `https://canvasicraft.github.io/Eye-Contact-Focus/?${queryParams}`;
+            return `https://canvasicraft.github.io/EyeCandy/?${queryParams}`;
         }
         return ''; // Return an empty string if no position is saved
     }
