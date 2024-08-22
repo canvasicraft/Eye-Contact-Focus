@@ -317,3 +317,13 @@ body {
     transform: translateX(-50%);
     text-align: center;
 }
+
+.eyeCandyLogo > img {
+    position: fixed;
+    top: 5px;
+    right: 4px;
+    width: auto;
+    height: 115px;
+    border-radius: 14px;
+}
+
